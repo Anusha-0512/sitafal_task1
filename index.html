@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px;
+            background-color: #4592a0;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #4592a0;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RAG System - Query and Data Ingestion</h1>
+        <form id="ingestForm">
+            <label for="url">Enter URL to Ingest:</label>
+            <input type="text" id="url" name="url" placeholder="Enter the URL here" required>
+            <button type="submit">Ingest Website</button>
+        </form>
+
+        <form id="queryForm">
+            <label for="query">Ask a Question:</label>
+            <input type="text" id="query" name="query" placeholder="Enter your question" required>
+            <button type="submit">Ask Question</button>
+        </form>
+
+        <div id="responseDiv" class="response"></div>
+    </div>
+  
+    <script>
+        document.getElementById('ingestForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const url = document.getElementById('url').value;
+            fetch('/ingest', {
+                method: 'POST',
+                body: new URLSearchParams({ 'url': url }),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => alert("Error: " + error));
+        });
+
+        document.getElementById('queryForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const query = document.getElementById('query').value;
+            fetch('/query', {
+                method: 'POST',
+                body: new URLSearchParams({ 'query': query }),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('responseDiv').textContent = "Answer: " + data.response;
+            })
+            .catch(error => alert("Error: " + error));
+        });
+    </script>    
+
+
+</body>
+</html>
